@@ -1,4 +1,6 @@
 /* eslint react/prop-types: 0 */
+import cn from 'classnames';
+
 function TramTable({ trams }) {
 
   return (
@@ -14,12 +16,16 @@ function TramTable({ trams }) {
         {trams.map((tram, i) => (
           <tr key={i}>
             <td className="py-1">
-              <div className="tram-nb-bg bg-black text-white rounded flex items-center justify-center" style={{ width: "2rem", height: "2rem" }}>
-                <span className="tram-nb" style={{ fontSize: "1rem" }}>{tram.line}</span>
+              <div className="tram-nb-bg bg-white text-white rounded flex items-center justify-center" style={{ width: "2rem", height: "2rem" }}>
+                <span className="tram-nb text-black" style={{ fontSize: "1.6rem" }}>{tram.line}</span>
               </div>
             </td>
-            <td className="py-1">{tram.direction}</td>
-            <td className="py-1">{tram.eta}</td>
+            <td className="py-1">{tram.direction}
+              {tram.isTripToCityCenter && (
+                <i className="fa-solid fa-city ml-2"></i>
+              )}
+            </td>
+            <td className={cn("py-1", tram.eta.split(" ")[0] <= 5 ? 'text-red-500' : '')}>{tram.eta}</td>
           </tr>
         ))}
 

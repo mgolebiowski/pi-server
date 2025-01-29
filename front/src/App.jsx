@@ -31,7 +31,7 @@ function App() {
   }, [])
 
   return (
-    <div className="bg-white shadow-lg rounded-lg p-4 main-view">
+    <div className="bg-gray-800 shadow-lg rounded-lg p-4 main-view text-white">
       <Header weatherIcon={weather.icon} weatherVal={weather.temperature} />
       <TramTable trams={trams} />
     </div>

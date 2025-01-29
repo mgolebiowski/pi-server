@@ -74,4 +74,5 @@ type Tram struct {
 	Line      string `json:"line"`
 	Direction string `json:"direction"`
 	ETA       string `json:"eta"`
+	ToCenter  bool   `json:"isTripToCityCenter"`
 }
