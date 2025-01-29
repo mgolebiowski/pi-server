@@ -23,7 +23,7 @@ function App() {
           setTrams(data.trams);
         })
         .catch(error => console.error('Error fetching data:', error));
-      }, 5000);
+      }, 10000);
 
     return () => {
       clearInterval(interval);
