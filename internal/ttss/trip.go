@@ -26,6 +26,11 @@ type TripResponse struct {
 	RouteName     string    `json:"routeName"`
 }
 
+const (
+	CzyzynyStopID          = "407"
+	StellaSawickiegoStopID = "112"
+)
+
 func IsTripToCityCenter(tripID string) (bool, error) {
 	u := fmt.Sprintf("https://ttss.krakow.pl/internetservice/services/tripInfo/tripPassages?tripId=%s&mode=departure", tripID)
 	resp, err := http.Get(u)
@@ -40,9 +45,10 @@ func IsTripToCityCenter(tripID string) (bool, error) {
 		return false, err
 	}
 
+	// Find the passage at Czyzyny stop and check if the next stop is Stella Sawickiego
 	for i, passage := range trip.Actual {
-		if passage.Stop.ShortName == "407" {
-			if trip.Actual[i+1].Stop.ShortName == "112" {
+		if passage.Stop.ShortName == CzyzynyStopID {
+			if trip.Actual[i+1].Stop.ShortName == StellaSawickiegoStopID {
 				return true, nil
 			}
 			return false, nil

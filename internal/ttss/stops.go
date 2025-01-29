@@ -29,9 +29,11 @@ func GetStop() ([]models.Tram, error) {
 
 	var trams []models.Tram
 	for _, passage := range passages.Actual {
+		// We need at least 5 minutes to get to the stop
 		if passage.ActualRelativeTime > 5*60 {
-			newEta := strings.Replace(passage.MixedTime, "%UNIT_MIN%", "minut", 1)
-			isToCityCenter, err := IsTripToCityCenter(passage.TripID)
+			// "5 %UNIT_MIN%" ->"5 min"
+			newEta := strings.Replace(passage.MixedTime, "%UNIT_MIN%", "min", 1)
+			toCenter, err := IsTripToCityCenter(passage.TripID)
 			if err != nil {
 				return nil, err
 			}
@@ -39,7 +41,7 @@ func GetStop() ([]models.Tram, error) {
 				Line:      passage.PatternText,
 				Direction: passage.Direction,
 				ETA:       newEta,
-				ToCenter:  isToCityCenter,
+				ToCenter:  toCenter,
 			})
 		}
 	}

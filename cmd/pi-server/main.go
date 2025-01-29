@@ -25,13 +25,13 @@ func main() {
 			http.Error(w, "Failed to fetch weather data", http.StatusInternalServerError)
 		}
 
-		tramsJSON, err := json.Marshal(models.StopResponse{Trams: trams, Weather: *weather})
+		response, err := json.Marshal(models.StopResponse{Trams: trams, Weather: *weather})
 		if err != nil {
 			http.Error(w, "Failed to marshal response", http.StatusInternalServerError)
 		}
 
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.Write(tramsJSON)
+		w.Write(response)
 	})
 
 	log.Println("Server is listening on :8080")
