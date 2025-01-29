@@ -2,10 +2,8 @@ package main
 
 import (
 	"encoding/json"
-	"io"
 	"log"
 	"net/http"
-	"strings"
 
 	"github.com/mgolebiowski/pi-server/internal/models"
 	"github.com/mgolebiowski/pi-server/internal/ttss"
@@ -17,40 +15,9 @@ func main() {
 	http.Handle("/", fs)
 
 	http.HandleFunc("/stop", func(w http.ResponseWriter, r *http.Request) {
-		resp, err := http.Get("https://ttss.krakow.pl/internetservice/services/passageInfo/stopPassages/stop?stop=407&mode=departure")
+		trams, err := ttss.GetStop()
 		if err != nil {
-			http.Error(w, "Failed to fetch data", http.StatusInternalServerError)
-			return
-		}
-		defer resp.Body.Close()
-
-		body, err := io.ReadAll(resp.Body)
-		if err != nil {
-			http.Error(w, "Failed to read response body", http.StatusInternalServerError)
-			return
-		}
-
-		var passages models.StopPassages
-		err = json.Unmarshal(body, &passages)
-		if err != nil {
-			http.Error(w, "Failed to unmarshal response body", http.StatusInternalServerError)
-		}
-
-		var trams []models.Tram
-		for _, passage := range passages.Actual {
-			if passage.ActualRelativeTime > 5*60 {
-				newEta := strings.Replace(passage.MixedTime, "%UNIT_MIN%", "minut", 1)
-				isToCityCenter, err := ttss.IsTripToCityCenter(passage.TripID)
-				if err != nil {
-					http.Error(w, "Failed to check if trip is to city center", http.StatusInternalServerError)
-				}
-				trams = append(trams, models.Tram{
-					Line:      passage.PatternText,
-					Direction: passage.Direction,
-					ETA:       newEta,
-					ToCenter:  isToCityCenter,
-				})
-			}
+			http.Error(w, "Failed to fetch tram data", http.StatusInternalServerError)
 		}
 
 		weather, err := weather.GetWeather()
