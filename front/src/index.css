@@ -1,0 +1,11 @@
+@import "tailwindcss";
+
+html {
+  font-size: 22px!important;
+}
+
+.main-view {
+  width: 800px;
+  height: 480px;
+  overflow: hidden;
+}
