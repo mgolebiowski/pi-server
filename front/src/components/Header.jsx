@@ -18,7 +18,9 @@ function Header({ weatherVal, weatherIcon }) {
     return (
         <header className="flex justify-between items-center border-b pb-2 mb-4">
             <div className="flex justify-between items-center">
-                <h1 className="text-2xl font-bold">CZYŻYNY</h1>
+                <h1 className="text-2xl font-bold">
+                    <i className="fa-solid fa-train-tram mr-2"></i>CZYŻYNY
+                </h1>
             </div>
             <div>
                 <p className="text-2xl"><span>{formattedTime}</span></p>
