@@ -12,8 +12,8 @@ function Header({ weatherVal, weatherIcon }) {
         return () => clearInterval(intervalId);
     }, []);
 
-    const formattedTime = currentTime.toLocaleTimeString();
-    const formattedDate = currentTime.toLocaleDateString();
+    const formattedTime = currentTime.toLocaleTimeString("pl");
+    const formattedDate = currentTime.toLocaleDateString("pl");
 
     return (
         <header className="flex justify-between items-center border-b pb-2 mb-4">
