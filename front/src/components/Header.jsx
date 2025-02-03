@@ -28,7 +28,7 @@ function Header({ weatherVal, weatherIcon }) {
             <div className="flex items-center space-x-4">
                 <p className="text-lg text-white-600"><span>{formattedDate}</span></p>
                 {
-                    weatherVal && (
+                    weatherIcon && (
                         <div className="flex items-center">
                             <img style={{ height: "2rem" }} src={`https://openweathermap.org/img/wn/${weatherIcon}@2x.png`} />
                             <span className="text-xl font-semibold">{weatherVal}°C</span>
