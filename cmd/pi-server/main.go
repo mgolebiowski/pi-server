@@ -11,6 +11,8 @@ import (
 )
 
 func main() {
+	ttss.InitTripsCache()
+
 	fs := http.FileServer(http.Dir("./dist"))
 	http.Handle("/", fs)
 

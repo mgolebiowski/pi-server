@@ -43,7 +43,35 @@ var (
 	mutex sync.RWMutex
 	// Cache entries valid for 10 minutes
 	cacheDuration = 10 * time.Minute
+	once          sync.Once
 )
+
+func InitTripsCache() {
+	startCacheCleanup()
+}
+
+func startCacheCleanup() {
+	once.Do(func() {
+		ticker := time.NewTicker(5 * time.Minute)
+		go func() {
+			for range ticker.C {
+				cleanupExpiredCache()
+			}
+		}()
+	})
+}
+
+func cleanupExpiredCache() {
+	mutex.Lock()
+	defer mutex.Unlock()
+
+	now := time.Now()
+	for tripID, item := range cache {
+		if now.Sub(item.timestamp) > cacheDuration {
+			delete(cache, tripID)
+		}
+	}
+}
 
 func IsTripToCityCenter(tripID string) (bool, error) {
 	// Check cache first
