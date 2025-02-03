@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"sync"
+	"time"
 )
 
 type Stop struct {
@@ -31,7 +33,30 @@ const (
 	StellaSawickiegoStopID = "112"
 )
 
+type tripCache struct {
+	direction bool
+	timestamp time.Time
+}
+
+var (
+	cache = make(map[string]tripCache)
+	mutex sync.RWMutex
+	// Cache entries valid for 10 minutes
+	cacheDuration = 10 * time.Minute
+)
+
 func IsTripToCityCenter(tripID string) (bool, error) {
+	// Check cache first
+	mutex.RLock()
+	if cached, exists := cache[tripID]; exists {
+		if time.Since(cached.timestamp) < cacheDuration {
+			mutex.RUnlock()
+			return cached.direction, nil
+		}
+	}
+	mutex.RUnlock()
+
+	// Make API call if not in cache or expired
 	u := fmt.Sprintf("https://ttss.krakow.pl/internetservice/services/tripInfo/tripPassages?tripId=%s&mode=departure", tripID)
 	resp, err := http.Get(u)
 	if err != nil {
@@ -45,14 +70,24 @@ func IsTripToCityCenter(tripID string) (bool, error) {
 		return false, err
 	}
 
-	// Find the passage at Czyzyny stop and check if the next stop is Stella Sawickiego
+	// Determine direction
+	result := false
 	for i, passage := range trip.Actual {
 		if passage.Stop.ShortName == CzyzynyStopID {
-			if trip.Actual[i+1].Stop.ShortName == StellaSawickiegoStopID {
-				return true, nil
+			if i+1 < len(trip.Actual) && trip.Actual[i+1].Stop.ShortName == StellaSawickiegoStopID {
+				result = true
 			}
-			return false, nil
+			break
 		}
 	}
-	return false, nil
+
+	// Store in cache
+	mutex.Lock()
+	cache[tripID] = tripCache{
+		direction: result,
+		timestamp: time.Now(),
+	}
+	mutex.Unlock()
+
+	return result, nil
 }
