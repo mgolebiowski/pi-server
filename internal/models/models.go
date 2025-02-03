@@ -71,6 +71,7 @@ type ShortWeather struct {
 }
 
 type Tram struct {
+	TripId    string `json:"tripId"`
 	Line      string `json:"line"`
 	Direction string `json:"direction"`
 	ETA       string `json:"eta"`

@@ -13,8 +13,8 @@ function TramTable({ trams }) {
         </tr>
       </thead>
       <tbody>
-        {trams.map((tram, i) => (
-          <tr key={i}>
+        {trams.map((tram) => (
+          <tr key={tram.trip_id}>
             <td className="py-1">
               <div className="tram-nb-bg bg-white text-white rounded flex items-center justify-center" style={{ width: "2rem", height: "2rem" }}>
                 <span className="tram-nb text-black" style={{ fontSize: "1.6rem" }}>{tram.line}</span>

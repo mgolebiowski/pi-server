@@ -29,6 +29,9 @@ func GetStop() ([]models.Tram, error) {
 
 	var trams []models.Tram
 	for _, passage := range passages.Actual {
+		if len(trams) >= 7 {
+			break
+		}
 		// We need at least 5 minutes to get to the stop
 		if passage.ActualRelativeTime > 5*60 {
 			// "5 %UNIT_MIN%" ->"5 min"
@@ -38,6 +41,7 @@ func GetStop() ([]models.Tram, error) {
 				return nil, err
 			}
 			trams = append(trams, models.Tram{
+				TripId:    passage.TripID,
 				Line:      passage.PatternText,
 				Direction: passage.Direction,
 				ETA:       newEta,
